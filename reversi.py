@@ -1,8 +1,12 @@
 import copy
 
+from typing import List
+
 
 class Reversi:
-    def __init__(self):
+    Board = List[List[int]]
+
+    def __init__(self) -> None:
         self.board_size = 8
         self.board = [[0] * self.board_size for x in range(self.board_size)]
         self.init_board()
@@ -13,19 +17,19 @@ class Reversi:
         self.player1_points = self.count_points(1)
         self.player2_points = self.count_points(2)
 
-    def init_board(self):
+    def init_board(self) -> None:
         self.board[3][3] = 2
         self.board[3][4] = 1
         self.board[4][3] = 1
         self.board[4][4] = 2
 
-    def print_board(self):
+    def print_board(self) -> None:
         for row in self.board:
             for col in row:
                 print(col, end=' ')
             print()
 
-    def print_valid_moves(self):
+    def print_valid_moves(self) -> None:
         for row in self.get_valid_moves():
             for col in row:
                 if col == -1:
@@ -34,7 +38,7 @@ class Reversi:
                     print(col, end=' ')
             print()
 
-    def make_a_move(self, row, col):
+    def make_a_move(self, row: int, col: int) -> bool:
         if not self.is_finished and self.is_valid_move(row, col):
             self.board[row][col] = self.current_player
             self.flip_in_dir(row, col, 1, 0)
@@ -59,7 +63,7 @@ class Reversi:
             return True
         return False
 
-    def get_valid_moves(self):
+    def get_valid_moves(self) -> Board:
         valid_moves = copy.deepcopy(self.board)
         for row in range(self.board_size):
             for col in range(self.board_size):
@@ -67,7 +71,7 @@ class Reversi:
                     valid_moves[row][col] = -1
         return valid_moves
 
-    def count_valid_moves(self):
+    def count_valid_moves(self) -> int:
         count = 0
         for row in self.valid_moves:
             for col in row:
@@ -75,7 +79,7 @@ class Reversi:
                     count += 1
         return count
 
-    def is_valid_move(self, row, col):
+    def is_valid_move(self, row: int, col: int) -> bool:
         if self.board[row][col] == 0:
             if (self.is_valid_in_dir(row, col, 1, 0)
                     or self.is_valid_in_dir(row, col, 1, 1)
@@ -88,7 +92,7 @@ class Reversi:
                 return True
         return False
 
-    def is_valid_in_dir(self, row, col, row_dir, col_dir):
+    def is_valid_in_dir(self, row: int, col: int, row_dir: int, col_dir: int) -> bool:
         opponent = 2 if self.current_player == 1 else 1
         next_row = row + row_dir
         next_col = col + col_dir
@@ -100,7 +104,7 @@ class Reversi:
                 next_col += col_dir
         return False
 
-    def flip_in_dir(self, row, col, row_dir, col_dir):
+    def flip_in_dir(self, row: int, col: int, row_dir: int, col_dir: int) -> None:
         opponent = 2 if self.current_player == 1 else 1
         next_row = row + row_dir
         next_col = col + col_dir
@@ -110,12 +114,12 @@ class Reversi:
                 next_row += row_dir
                 next_col += col_dir
 
-    def is_out_of_bounds(self, row, col):
+    def is_out_of_bounds(self, row: int, col: int) -> bool:
         if row < 0 or row >= self.board_size or col < 0 or col >= self.board_size:
             return True
         return False
 
-    def count_points(self, player):
+    def count_points(self, player: int) -> int:
         count = 0
         for row in self.board:
             for col in row:
