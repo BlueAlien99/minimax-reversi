@@ -1,12 +1,16 @@
 # Reversi
-## Directory structure
-* pyenv - Python virtual environment https://docs.python.org/3/tutorial/venv.html
-#### How to activate virtual environment
-```python
+## File structure
+* main.py - main file
+* ai.py - AI algorithm
+* engine.py - game engine (move validation, game state,...)
+* gui.py - graphical interface
+### How to install required packages
+optionally create and activate virtual environment
+```bash
+python3 -m venv pyenv
 source pyenv/bin/activate
 ```
-* requirements.txt - file containing all required Python packages <br>
-#### How to install required packages
-```python
-pip install -r requirements.txx
+install packages
+```bash
+pip install -r requirements.txt
 ```
