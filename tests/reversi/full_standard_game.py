@@ -1,9 +1,7 @@
 from reversi import Reversi
 
-# TODO: Test no valid moves pass
-# TODO: Test no valid moves finish
 
-if __name__ == "__main__":
+def run_test():
     reversi = Reversi()
 
     assert reversi.make_a_move(2, 3)
