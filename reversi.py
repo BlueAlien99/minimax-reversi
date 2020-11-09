@@ -4,20 +4,23 @@ from typing import List
 
 
 class Reversi:
+
     Board = List[List[int]]
+
+    __directions = [(1, 0), (1, 1), (0, 1), (-1, 1), (-1, 0), (-1, -1), (0, -1), (1, -1)]
 
     def __init__(self) -> None:
         self.board_size = 8
         self.board = [[0] * self.board_size for x in range(self.board_size)]
-        self.init_board()
+        self.__init_board()
         self.current_player = 1
-        self.valid_moves = self.get_valid_moves()
-        self.num_of_valid_moves = self.count_valid_moves()
+        self.valid_moves = self.__get_valid_moves()
+        self.num_of_valid_moves = self.__count_valid_moves()
         self.is_finished = False
-        self.player1_points = self.count_points(1)
-        self.player2_points = self.count_points(2)
+        self.player1_points = self.__count_points(1)
+        self.player2_points = self.__count_points(2)
 
-    def init_board(self) -> None:
+    def __init_board(self) -> None:
         self.board[3][3] = 2
         self.board[3][4] = 1
         self.board[4][3] = 1
@@ -30,7 +33,7 @@ class Reversi:
             print()
 
     def print_valid_moves(self) -> None:
-        for row in self.get_valid_moves():
+        for row in self.valid_moves:
             for col in row:
                 if col == -1:
                     print('-', end=' ')
@@ -39,39 +42,34 @@ class Reversi:
             print()
 
     def make_a_move(self, row: int, col: int) -> bool:
-        if not self.is_finished and self.is_valid_move(row, col):
+        if not self.is_finished and self.__is_valid_move(row, col):
             self.board[row][col] = self.current_player
-            self.flip_in_dir(row, col, 1, 0)
-            self.flip_in_dir(row, col, 1, 1)
-            self.flip_in_dir(row, col, 0, 1)
-            self.flip_in_dir(row, col, -1, 1)
-            self.flip_in_dir(row, col, -1, 0)
-            self.flip_in_dir(row, col, -1, -1)
-            self.flip_in_dir(row, col, 0, -1)
-            self.flip_in_dir(row, col, 1, -1)
-            self.player1_points = self.count_points(1)
-            self.player2_points = self.count_points(2)
-            self.current_player = 2 if self.current_player == 1 else 1
-            self.valid_moves = self.get_valid_moves()
-            self.num_of_valid_moves = self.count_valid_moves()
+            for direction in self.__directions:
+                self.__flip_in_dir(row, col, direction[0], direction[1])
+            self.player1_points = self.__count_points(1)
+            self.player2_points = self.__count_points(2)
+            self.__next_turn()
             if self.num_of_valid_moves == 0:
-                self.current_player = 2 if self.current_player == 1 else 1
-                self.valid_moves = self.get_valid_moves()
-                self.num_of_valid_moves = self.count_valid_moves()
+                self.__next_turn()
                 if self.num_of_valid_moves == 0:
                     self.is_finished = True
             return True
         return False
 
-    def get_valid_moves(self) -> Board:
+    def __next_turn(self) -> None:
+        self.current_player = 2 if self.current_player == 1 else 1
+        self.valid_moves = self.__get_valid_moves()
+        self.num_of_valid_moves = self.__count_valid_moves()
+
+    def __get_valid_moves(self) -> Board:
         valid_moves = copy.deepcopy(self.board)
         for row in range(self.board_size):
             for col in range(self.board_size):
-                if self.is_valid_move(row, col):
+                if self.__is_valid_move(row, col):
                     valid_moves[row][col] = -1
         return valid_moves
 
-    def count_valid_moves(self) -> int:
+    def __count_valid_moves(self) -> int:
         count = 0
         for row in self.valid_moves:
             for col in row:
@@ -79,47 +77,41 @@ class Reversi:
                     count += 1
         return count
 
-    def is_valid_move(self, row: int, col: int) -> bool:
+    def __is_valid_move(self, row: int, col: int) -> bool:
         if self.board[row][col] == 0:
-            if (self.is_valid_in_dir(row, col, 1, 0)
-                    or self.is_valid_in_dir(row, col, 1, 1)
-                    or self.is_valid_in_dir(row, col, 0, 1)
-                    or self.is_valid_in_dir(row, col, -1, 1)
-                    or self.is_valid_in_dir(row, col, -1, 0)
-                    or self.is_valid_in_dir(row, col, -1, -1)
-                    or self.is_valid_in_dir(row, col, 0, -1)
-                    or self.is_valid_in_dir(row, col, 1, -1)):
-                return True
+            for direction in self.__directions:
+                if self.__is_valid_in_dir(row, col, direction[0], direction[1]):
+                    return True
         return False
 
-    def is_valid_in_dir(self, row: int, col: int, row_dir: int, col_dir: int) -> bool:
+    def __is_valid_in_dir(self, row: int, col: int, row_dir: int, col_dir: int) -> bool:
         opponent = 2 if self.current_player == 1 else 1
         next_row = row + row_dir
         next_col = col + col_dir
-        if not self.is_out_of_bounds(next_row, next_col) and self.board[next_row][next_col] == opponent:
-            while not self.is_out_of_bounds(next_row, next_col) and self.board[next_row][next_col] != 0:
+        if not self.__is_out_of_bounds(next_row, next_col) and self.board[next_row][next_col] == opponent:
+            while not self.__is_out_of_bounds(next_row, next_col) and self.board[next_row][next_col] != 0:
                 if self.board[next_row][next_col] == self.current_player:
                     return True
                 next_row += row_dir
                 next_col += col_dir
         return False
 
-    def flip_in_dir(self, row: int, col: int, row_dir: int, col_dir: int) -> None:
+    def __flip_in_dir(self, row: int, col: int, row_dir: int, col_dir: int) -> None:
         opponent = 2 if self.current_player == 1 else 1
         next_row = row + row_dir
         next_col = col + col_dir
-        if self.is_valid_in_dir(row, col, row_dir, col_dir):
-            while not self.is_out_of_bounds(next_row, next_col) and self.board[next_row][next_col] == opponent:
+        if self.__is_valid_in_dir(row, col, row_dir, col_dir):
+            while not self.__is_out_of_bounds(next_row, next_col) and self.board[next_row][next_col] == opponent:
                 self.board[next_row][next_col] = self.current_player
                 next_row += row_dir
                 next_col += col_dir
 
-    def is_out_of_bounds(self, row: int, col: int) -> bool:
+    def __is_out_of_bounds(self, row: int, col: int) -> bool:
         if row < 0 or row >= self.board_size or col < 0 or col >= self.board_size:
             return True
         return False
 
-    def count_points(self, player: int) -> int:
+    def __count_points(self, player: int) -> int:
         count = 0
         for row in self.board:
             for col in row:
