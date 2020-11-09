@@ -1,10 +1,12 @@
 import pygame
 import pygame_gui
 import sys
+from .utils import Color, Board
 
 
 class GUI:
-    size = width, height = 800, 600
+    size = width, height = 800, 800
+    elements = []
 
     def __init__(self):
         pygame.init()
@@ -12,13 +14,17 @@ class GUI:
         self.manager = pygame_gui.UIManager(self.size)
         self.clock = pygame.time.Clock()
         self.build()
+        
+        self.board = Board(self.screen)
 
     def update(self):
         time_delta = self.clock.tick(60) / 1000.0
         self.process_events()
         self.manager.update(time_delta)
-        self.screen.fill((0, 0, 0))
-        self.manager.draw_ui(self.screen)
+        self.screen.fill(Color.WHITE.value)
+
+        self.board.draw()
+
         pygame.display.update()
 
     def build(self):
@@ -38,5 +44,3 @@ class GUI:
                         print('Hello World!')
 
             self.manager.process_events(event)
-
-    
