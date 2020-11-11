@@ -1,3 +1,4 @@
-.idea
-
+pyenv
 __pycache__
+.vscode
+.idea
