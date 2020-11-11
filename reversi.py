@@ -14,8 +14,10 @@ class Reversi:
         self.board = [[0] * self.board_size for x in range(self.board_size)]
         self.__init_board()
         self.current_player = 1
-        self.valid_moves = self.__get_valid_moves()
-        self.num_of_valid_moves = self.__count_valid_moves()
+        self.valid_moves = []
+        self.valid_moves_list = []
+        self.num_of_valid_moves = 0
+        self.__update_valid_moves()
         self.is_finished = False
         self.player1_points = self.__count_points(1)
         self.player2_points = self.__count_points(2)
@@ -58,24 +60,21 @@ class Reversi:
 
     def __next_turn(self) -> None:
         self.current_player = 2 if self.current_player == 1 else 1
-        self.valid_moves = self.__get_valid_moves()
-        self.num_of_valid_moves = self.__count_valid_moves()
+        self.__update_valid_moves()
 
-    def __get_valid_moves(self) -> Board:
+    def __update_valid_moves(self) -> None:
         valid_moves = copy.deepcopy(self.board)
+        valid_list = []
+        count = 0
         for row in range(self.board_size):
             for col in range(self.board_size):
                 if self.__is_valid_move(row, col):
                     valid_moves[row][col] = -1
-        return valid_moves
-
-    def __count_valid_moves(self) -> int:
-        count = 0
-        for row in self.valid_moves:
-            for col in row:
-                if col == -1:
+                    valid_list.append((row, col))
                     count += 1
-        return count
+        self.valid_moves = valid_moves
+        self.valid_moves_list = valid_list
+        self.num_of_valid_moves = count
 
     def __is_valid_move(self, row: int, col: int) -> bool:
         if self.board[row][col] == 0:

@@ -4,6 +4,11 @@ from reversi import Reversi
 def run_test():
     reversi = Reversi()
 
+    assert reversi.player1_points == 2
+    assert reversi.player2_points == 2
+    assert reversi.num_of_valid_moves == 4
+    assert reversi.valid_moves_list == [(2, 3), (3, 2), (4, 5), (5, 4)]
+
     assert reversi.make_a_move(2, 3)
     assert reversi.make_a_move(2, 2)
     assert reversi.make_a_move(2, 1)
@@ -12,6 +17,7 @@ def run_test():
     assert reversi.player1_points == 4
     assert reversi.player2_points == 4
     assert reversi.num_of_valid_moves == 3
+    assert len(reversi.valid_moves_list) == reversi.num_of_valid_moves
 
     assert reversi.make_a_move(5, 5)
     assert reversi.make_a_move(5, 2)
@@ -21,6 +27,7 @@ def run_test():
     assert reversi.player1_points == 8
     assert reversi.player2_points == 4
     assert reversi.num_of_valid_moves == 6
+    assert len(reversi.valid_moves_list) == reversi.num_of_valid_moves
 
     assert reversi.make_a_move(5, 3)
     assert reversi.make_a_move(3, 7)
@@ -30,6 +37,7 @@ def run_test():
     assert reversi.player1_points == 7
     assert reversi.player2_points == 9
     assert reversi.num_of_valid_moves == 5
+    assert len(reversi.valid_moves_list) == reversi.num_of_valid_moves
 
     assert reversi.make_a_move(4, 5)
     assert reversi.make_a_move(6, 5)
@@ -39,6 +47,7 @@ def run_test():
     assert reversi.player1_points == 8
     assert reversi.player2_points == 12
     assert reversi.num_of_valid_moves == 9
+    assert len(reversi.valid_moves_list) == reversi.num_of_valid_moves
 
     assert reversi.make_a_move(7, 5)
     assert reversi.make_a_move(3, 2)
@@ -48,6 +57,7 @@ def run_test():
     assert reversi.player1_points == 8
     assert reversi.player2_points == 16
     assert reversi.num_of_valid_moves == 10
+    assert len(reversi.valid_moves_list) == reversi.num_of_valid_moves
 
     board = [[0, 0, 0, 0, 0, 0, 0, 2],
              [0, 0, 0, 0, 0, 1, 2, 0],
