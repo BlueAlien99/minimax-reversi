@@ -19,7 +19,6 @@ class State(enum.Enum):
     CHECKED_BLACK = 1
     CHECKED_WHITE = 2
 
-
 class Board():
     class Tile:
         def __init__(self, screen, x: int, y: int):
@@ -95,7 +94,7 @@ class Board():
         for row in self.tiles:
             x = 0
             for tile in row:
-                tile.draw(State(board_state[x][y]), valid_moves[x][y])
+                tile.draw(State(board_state[x][y]), valid_moves[x][y] < 0)
                 x += 1
             y += 1
 

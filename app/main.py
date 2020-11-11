@@ -1,25 +1,13 @@
 from gui.main import GUI
+from reversi import Reversi
 
 gui = GUI()
+reversi = Reversi()
 
-board = [[0, 0, 0, 0, 0, 0, 0, 0],
-         [0, 0, 0, 0, 0, 0, 0, 0],
-         [0, 0, 0, 0, 0, 0, 0, 0],
-         [0, 0, 0, 1, 2, 0, 0, 0],
-         [0, 0, 0, 2, 1, 0, 0, 0],
-         [0, 0, 0, 0, 0, 0, 0, 0],
-         [0, 0, 0, 0, 0, 0, 0, 0],
-         [0, 0, 0, 0, 0, 0, 0, 0]]
-
-valid_moves = [[0, 0, 0, 0, 0, 0, 0, 0],
-               [0, 0, 0, 0, 0, 0, 0, 0],
-               [0, 0, 0, 1, 0, 0, 0, 0],
-               [0, 0, 1, 0, 0, 0, 0, 0],
-               [0, 0, 0, 0, 0, 1, 0, 0],
-               [0, 0, 0, 0, 1, 0, 0, 0],
-               [0, 0, 0, 0, 0, 0, 0, 0],
-               [0, 0, 0, 0, 0, 0, 0, 0]]
-
+print(reversi.valid_moves)
 while True:
-    gui.update(board, valid_moves)
+    moves = gui.update(reversi.board, reversi.valid_moves)
+    for move in moves:
+        if reversi.make_a_move(move[0], move[1]):
+            break
 

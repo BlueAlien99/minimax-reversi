@@ -4,7 +4,7 @@ import sys
 from .utils import Color, Board, DropDownWithCaption
 from pygame_gui.elements import UIButton
 from pygame_gui.elements.ui_selection_list import UISelectionList
-
+from typing import List, Tuple
 
 class GUI:
     size = width, height = 800, 800
@@ -19,7 +19,8 @@ class GUI:
         
         self.board = Board(self.screen, 80, 40)
 
-    def update(self, board_state, possible_moves):
+    def update(self, board_state: List[List[int]], possible_moves: List[List[int]]) -> List[Tuple[int]]:
+        self.moves = []
         time_delta = self.clock.tick(60) / 1000.0
         self.process_events()
         self.ui_manager.update(time_delta)
@@ -30,6 +31,8 @@ class GUI:
         
         self.ui_manager.draw_ui(self.screen)
         pygame.display.update()
+
+        return self.moves
 
     def build(self):
         self.play_button = UIButton(
@@ -53,6 +56,6 @@ class GUI:
                     if event.ui_element == self.play_button:
                         print('Hello World!')
             if event.type == pygame.MOUSEBUTTONDOWN:
-                print(self.board.is_clicked(*pygame.mouse.get_pos()))
+                self.moves.append(self.board.is_clicked(*pygame.mouse.get_pos()))
 
             self.ui_manager.process_events(event)
