@@ -26,8 +26,8 @@ if __name__ == "__main__":
     pl2score = []
     noprunetimes = []
     prunetimes = []
-    player = 3
-    comp = 4
+    player = 2
+    comp = 7
     while not rev.is_finished:
         # input('next move')
         ttt = time.process_time()
@@ -35,9 +35,9 @@ if __name__ == "__main__":
             move = ai.get_optimal_move(rev, player)
             moveprune = ai2.get_optimal_move(rev, player)
         else:
-            t = time.process_time()
-            move = ai.get_optimal_move(rev, comp)
-            noprunetimes.append(time.process_time() - t)
+            # t = time.process_time()
+            # move = ai.get_optimal_move(rev, comp)
+            # noprunetimes.append(time.process_time() - t)
             t = time.process_time()
             moveprune = ai2.get_optimal_move(rev, comp)
             prunetimes.append(time.process_time() - t)
@@ -45,8 +45,8 @@ if __name__ == "__main__":
         if move == (-1, -1):
             print("invalid")
             break
-        assert move == moveprune, f'{move}, {moveprune}'
-        assert rev.make_a_move(move[0], move[1])
+        # assert move == moveprune, f'{move}, {moveprune}'
+        assert rev.make_a_move(moveprune[0], moveprune[1])
         pl1score.append(rev.player1_points)
         pl2score.append(rev.player2_points)
         rev.print_board()
@@ -54,11 +54,10 @@ if __name__ == "__main__":
     print(rev.player1_points)
     print(rev.player2_points)
 
-    # plt.plot(pl1score, color="black")
-    # plt.plot(pl2score, color='red')
-    # plt.show()
-
-    plt.plot(noprunetimes, color="blue")
-    plt.plot(prunetimes, color='red')
+    plt.plot(pl1score, color="black")
+    plt.plot(pl2score, color='red')
     plt.show()
 
+    # plt.plot(noprunetimes, color="blue")
+    # plt.plot(prunetimes, color='red')
+    # plt.show()
