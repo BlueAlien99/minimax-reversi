@@ -2,7 +2,7 @@ import copy
 
 from typing import Tuple
 
-from reversi import Reversi
+from .reversi import Reversi
 
 
 def get_optimal_move(game_state: Reversi, depth: int) -> Tuple[int, int]:

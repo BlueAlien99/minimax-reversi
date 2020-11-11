@@ -3,8 +3,8 @@ import pygame_gui
 import sys
 from .utils import Color, Board, DropDownWithCaption
 from pygame_gui.elements import UIButton
-from pygame_gui.elements.ui_selection_list import UISelectionList
 from typing import List, Tuple
+
 
 class GUI:
     size = width, height = 800, 800
@@ -16,8 +16,9 @@ class GUI:
         self.ui_manager = pygame_gui.UIManager(self.size)
         self.clock = pygame.time.Clock()
         self.build()
-        
+
         self.board = Board(self.screen, 80, 40)
+        self.moves = []
 
     def update(self, board_state: List[List[int]], possible_moves: List[List[int]]) -> List[Tuple[int]]:
         self.moves = []
@@ -28,7 +29,7 @@ class GUI:
 
         self.board.draw(board_state, possible_moves)
         self.pick_start_dropdown.draw()
-        
+
         self.ui_manager.draw_ui(self.screen)
         pygame.display.update()
 
@@ -49,7 +50,8 @@ class GUI:
 
     def process_events(self):
         for event in pygame.event.get():
-            if event.type == pygame.QUIT: sys.exit()
+            if event.type == pygame.QUIT:
+                sys.exit()
 
             if event.type == pygame.USEREVENT:
                 if event.user_type == pygame_gui.UI_BUTTON_PRESSED:

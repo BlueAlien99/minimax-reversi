@@ -1,4 +1,4 @@
-from reversi import Reversi
+from app.reversi import Reversi
 
 
 def run_test():

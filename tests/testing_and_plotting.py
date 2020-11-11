@@ -3,9 +3,8 @@ import matplotlib.pyplot as plt
 
 from random import randrange
 
-from reversi import Reversi
-import ai
-import ai2
+from app.reversi import Reversi
+from app import ai2
 
 if __name__ == "__main__":
     print("Somebody once told me")
