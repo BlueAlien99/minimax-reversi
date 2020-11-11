@@ -1,6 +1,8 @@
 import time
 import matplotlib.pyplot as plt
 
+from random import randrange
+
 from reversi import Reversi
 import ai
 import ai2
@@ -27,13 +29,14 @@ if __name__ == "__main__":
     noprunetimes = []
     prunetimes = []
     player = 2
-    comp = 7
+    comp = 6
     while not rev.is_finished:
         # input('next move')
         ttt = time.process_time()
         if rev.current_player == 1:
-            move = ai.get_optimal_move(rev, player)
-            moveprune = ai2.get_optimal_move(rev, player)
+            # move = ai.get_optimal_move(rev, player)
+            # moveprune = ai2.get_optimal_move(rev, player)
+            moveprune = rev.valid_moves_list[randrange(len(rev.valid_moves_list))]
         else:
             # t = time.process_time()
             # move = ai.get_optimal_move(rev, comp)
@@ -42,7 +45,7 @@ if __name__ == "__main__":
             moveprune = ai2.get_optimal_move(rev, comp)
             prunetimes.append(time.process_time() - t)
         print(time.process_time() - ttt)
-        if move == (-1, -1):
+        if moveprune == (-1, -1):
             print("invalid")
             break
         # assert move == moveprune, f'{move}, {moveprune}'
