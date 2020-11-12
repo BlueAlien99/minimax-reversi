@@ -1,10 +1,9 @@
 import enum
 import pygame
 from typing import List
-from typing import NewType
-from pygame_gui.elements.ui_panel import UIPanel
 import pygame.freetype
 from pygame_gui.elements.ui_drop_down_menu import UIDropDownMenu
+
 
 class Color(enum.Enum):
     NO_COLOR = -1
@@ -13,27 +12,34 @@ class Color(enum.Enum):
     GREEN = (0, 128, 0)
     ORANGE = (255, 165, 0)
     BROWN = (139, 69, 19)
+    RED = (255, 0, 0)
 
+""" Different states of the board tile
+        UNCHECKED -- tile is unchecked (GREEN)
+        BLACK -- checked black
+        WHITE -- checked white """
 class State(enum.Enum):
     UNCHECKED = 0
-    CHECKED_BLACK = 1
-    CHECKED_WHITE = 2
+    BLACK = 1
+    WHITE = 2
 
+""" Represents tiled game board """
 class Board():
+    """ Represenst single board tile """
     class Tile:
+        """
+        big_rect is always black it is used to display border around tiles
+        if tile is in POSSIBLE_CHECK state:
+            * normal_rect is orange
+            * small rect is green
+        else:
+            * normal_rect is green
+            * small_rect is not displayed
+        """
         def __init__(self, screen, x: int, y: int):
             self.screen = screen
             self.x = x
             self.y = y
-            """
-            big_rect is always black it is used to display border around tiles
-            if tile is in POSSIBLE_CHECK state:
-                * normal_rect is orange
-                * small rect is green
-            else:
-                * normal_rect is green
-                * small_rect is not displayed
-            """
             self.big_rect = pygame.Rect(
                 self.x - Board.tile_size,
                 self.y - Board.tile_size,
@@ -53,7 +59,7 @@ class Board():
                 2*Board.tile_size - 2*Board.tile_b_size2
             )
 
-
+        """ Draws a tile """
         def draw(self, state: State, is_possible_check: bool):
             pygame.draw.rect(self.screen, Color.BLACK.value, self.big_rect)
 
@@ -63,11 +69,12 @@ class Board():
             else:
                 pygame.draw.rect(self.screen, Color.GREEN.value, self.normal_rect)
 
-            if (state == State.CHECKED_BLACK):
+            if (state == State.BLACK):
                 pygame.draw.circle(self.screen, Color.BLACK.value, (self.x, self.y), Board.tile_size - Board.tile_padding)
-            elif (state == State.CHECKED_WHITE):
+            elif (state == State.WHITE):
                 pygame.draw.circle(self.screen, Color.WHITE.value, (self.x, self.y), Board.tile_size - Board.tile_padding)
 
+        """ Returns True if tile was clicked """
         def is_clicked(self, x, y):
             return self.big_rect.collidepoint((x, y))
 
@@ -79,7 +86,8 @@ class Board():
     tile_b_size2 = 6
     rows = 8
     cols = 8
-
+    
+    """ Creates tiled board of size 8x8 """
     def __init__(self, screen, board_x = 0, board_y = 0):
         self.tiles = [
             [
@@ -98,6 +106,9 @@ class Board():
                 x += 1
             y += 1
 
+    """ Checks if any tile was clicked
+            If a tile was clicked returns its coordinates
+            Returns (-1, -1) otherwise """
     def is_clicked(self, mouse_x, mouse_y) -> (int, int):
         clicked = False
         y = 0
@@ -110,6 +121,7 @@ class Board():
             y += 1
         return (-1, -1)
 
+""" Helper class aggregating dropdown list with caption """
 class DropDownWithCaption:
     def __init__(self, screen, ui_manager, x: int, y: int, options_list: List[str], starting_option: str, caption: str):
         font = pygame.freetype.SysFont('Comic Sans MS', 24)
@@ -124,3 +136,8 @@ class DropDownWithCaption:
 
     def draw(self):
         self.screen.blit(self.text_surface, (self.x, self.y))
+
+""" Timer helper class """
+class Timer:
+    def __init__(self, screen):
+        pass
