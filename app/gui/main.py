@@ -4,7 +4,7 @@ import sys
 from .utils import Color, Board, DropDownWithCaption
 from pygame_gui.elements import UIButton
 from typing import List
-from game_state import GameState
+from app.game_state import GameState
 
 """ Class handling app's GUI behaviour """
 class GUI:

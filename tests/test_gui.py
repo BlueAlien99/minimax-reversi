@@ -1,8 +1,11 @@
 from app.gui.main import GUI
+from app.reversi import Reversi
+from app.game_state import GameState
 
 
 if __name__ == "__main__":
-    gui = GUI()
+    game_state = GameState()
+    gui = GUI(game_state)
 
     board = [[0, 0, 0, 0, 0, 0, 0, 0],
              [0, 0, 0, 0, 0, 0, 0, 0],
@@ -15,12 +18,14 @@ if __name__ == "__main__":
 
     valid_moves = [[0, 0, 0, 0, 0, 0, 0, 0],
                    [0, 0, 0, 0, 0, 0, 0, 0],
-                   [0, 0, 0, 1, 0, 0, 0, 0],
-                   [0, 0, 1, 0, 0, 0, 0, 0],
-                   [0, 0, 0, 0, 0, 1, 0, 0],
-                   [0, 0, 0, 0, 1, 0, 0, 0],
+                   [0, 0, 0, -1, 0, 0, 0, 0],
+                   [0, 0, -1, 0, 0, 0, 0, 0],
+                   [0, 0, 0, 0, 0, -1, 0, 0],
+                   [0, 0, 0, 0, -1, 0, 0, 0],
                    [0, 0, 0, 0, 0, 0, 0, 0],
                    [0, 0, 0, 0, 0, 0, 0, 0]]
 
     while True:
-        gui.update(board, valid_moves)
+        game_state.set_board_state(board)
+        game_state.set_valid_moves(valid_moves)
+        gui.update()
