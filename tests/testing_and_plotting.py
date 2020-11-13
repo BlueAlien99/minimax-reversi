@@ -1,3 +1,7 @@
+"""
+    Usage: python3 program_name [player_1_depth] [player2_depth]
+"""
+
 import time
 import matplotlib.pyplot as plt
 
@@ -5,11 +9,16 @@ from random import randrange
 
 from app.reversi import Reversi
 from app import ai2
+from app import ai
+
+import sys
+import os
+
 
 if __name__ == "__main__":
-    print("Somebody once told me")
-    print("The world is gonna roll me")
-    print("I ain't the sharpest tool in the shed")
+    if (len(sys.argv) != 3):
+        print("Usage: python3 program_name [player_1_depth] [player2_depth]")
+        sys.exit()
 
     # gods = time.process_time()
     #
@@ -20,44 +29,57 @@ if __name__ == "__main__":
     #
     # print(time.process_time() - gods)
 
-    rev = Reversi()
-    rev.print_board()
+    game = Reversi()
+    game.print_board()
+    print("")
     i = 0
     pl1score = []
     pl2score = []
     noprunetimes = []
     prunetimes = []
-    player = 2
-    comp = 6
-    while not rev.is_finished:
+    p1_depth = int(sys.argv[1])
+    p2_depth = int(sys.argv[2])
+
+    while not game.is_finished:
         # input('next move')
         ttt = time.process_time()
-        if rev.current_player == 1:
-            # move = ai.get_optimal_move(rev, player)
-            # moveprune = ai2.get_optimal_move(rev, player)
-            moveprune = rev.valid_moves_list[randrange(len(rev.valid_moves_list))]
+        if game.current_player == 1:
+            # move = ai.get_optimal_move(game, player)
+            moveprune = ai.get_optimal_move(game, p1_depth)
+           # moveprune = game.valid_moves_list[randrange(len(game.valid_moves_list))]
         else:
             # t = time.process_time()
-            # move = ai.get_optimal_move(rev, comp)
+            # move = ai.get_optimal_move(game, comp)
             # noprunetimes.append(time.process_time() - t)
             t = time.process_time()
-            moveprune = ai2.get_optimal_move(rev, comp)
+            moveprune = ai.get_optimal_move(game, p2_depth)
             prunetimes.append(time.process_time() - t)
-        print(time.process_time() - ttt)
         if moveprune == (-1, -1):
-            print("invalid")
+            print("invalid move")
             break
         # assert move == moveprune, f'{move}, {moveprune}'
-        assert rev.make_a_move(moveprune[0], moveprune[1])
-        pl1score.append(rev.player1_points)
-        pl2score.append(rev.player2_points)
-        rev.print_board()
+        print("Player: " + str(game.current_player))
+        print("Time took: " + str(time.process_time() - ttt))
+        assert game.make_a_move(moveprune[0], moveprune[1])
+        pl1score.append(game.player1_points)
+        pl2score.append(game.player2_points)
+        print("P1 score: " + str(game.player1_points) + "\tP2 score: " + str(game.player2_points))
+        game.print_board()
+        print("")
 
-    print(rev.player1_points)
-    print(rev.player2_points)
+    print(game.player1_points)
+    print(game.player2_points)
 
+
+    # Display plot showing points over time
+    plt.ylabel('points')
+    plt.xlabel('number of moves')
     plt.plot(pl1score, color="black")
     plt.plot(pl2score, color='red')
+    plt.legend(['player1', 'player2'])
+    if not os.path.exists('tests/plots'):
+        os.mkdir('tests/plots')
+    plt.savefig("tests/plots/" + str(p1_depth) + str(p2_depth) + ".png")
     plt.show()
 
     # plt.plot(noprunetimes, color="blue")
