@@ -123,32 +123,49 @@ class Board():
             y += 1
         return -1, -1
 
+""" Simple text field """
+class Text:
+    def __init__(self, screen, x: int, y: int, text: str, color: Color = Color.BLACK):
+        self.font = pygame.freetype.SysFont('Comic Sans MS', 24)
+        self.x = x
+        self.y = y
+        self.screen = screen
+        self.text = text
+        self.color = color
+
+    def set_text(self, text: str):
+        self.text = text
+
+    def draw(self):
+        text_surface, rect = self.font.render(self.text, self.color.value)
+        self.screen.blit(text_surface, (self.x, self.y))
 
 """ Dropdown list with caption """
 class DropDownWithCaption:
     def __init__(self, screen, ui_manager, x: int, y: int,
-                 options_list: List[str], starting_option: str, caption: str):
-        font = pygame.freetype.SysFont('Comic Sans MS', 24)
+                 options_list: List[str], starting_option: str, caption_text: str):
         self.x = x
         self.y = y
         self.screen = screen
-        self.text_surface, rect = font.render(caption, (0, 0, 0))
+        self.caption = Text(screen, x, y, caption_text)
         self.dropdown = UIDropDownMenu(options_list=options_list,
                                        starting_option=starting_option,
                                        relative_rect=pygame.Rect((x, y+24), (140, 40)),
                                        manager=ui_manager)
 
+    def set_caption(self, caption_text: str):
+        self.caption.set_text(caption_text)
+
     def draw(self):
-        self.screen.blit(self.text_surface, (self.x, self.y))
+        self.caption.draw()
 
 """ Text input box with caption """
 class TextBoxWithCaption:
-    def __init__(self, screen, ui_manager, x: int, y: int, caption: str):
-        font = pygame.freetype.SysFont('Comic Sans MS', 24)
+    def __init__(self, screen, ui_manager, x: int, y: int, caption_text: str):
         self.x = x
         self.y = y
         self.screen = screen
-        self.text_surface, rect = font.render(caption, (0, 0, 0))
+        self.caption = Text(screen, x+7, y, caption_text)
         self.text_box = UITextEntryLine(relative_rect=pygame.Rect((x, y+24), (30, 30)),
                                 manager=ui_manager)
 
@@ -157,8 +174,7 @@ class TextBoxWithCaption:
         return self.text_box.get_text()
 
     def draw(self):
-        self.screen.blit(self.text_surface, (self.x + 7, self.y))
-
+        self.caption.draw()
 
 """ Timer that displays minutes and seconds in mm:ss format """
 class Timer:
@@ -191,6 +207,7 @@ class Timer:
         text = time.strftime("%M:%S", time.gmtime(t))
         self.text_surface, rect = self.font.render(text, (0, 0, 0))
         self.screen.blit(self.text_surface, (self.x, self.y))
+
 
 """ Utility functions """
 

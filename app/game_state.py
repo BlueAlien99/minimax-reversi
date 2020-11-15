@@ -12,7 +12,7 @@ class State(enum.Enum):
     FINISHED = 2
     RESTARTING = 3
 
-class TurnOf(enum.Enum):
+class Player(enum.Enum):
     Player1 = 1
     Player2 = 2
 
@@ -22,43 +22,66 @@ class Move:
         self.row = row
         self.col = col
 
+class Property(enum.Enum):
+    IS_HUMAN = 0
+    DEPTH = 1
+    STARTS_GAME = 2
+
 """ Class containing current game state
         Is used to communicate between GUI and game engine """
 class GameState:
-
-
     def __init__(self):
         self.state = State.BEFORE_START
         self.moves = []
         self.board_state = []
         self.valid_moves = []
-        self.turn = TurnOf.Player1
+        self.turn = Player.Player1
+        self.points = { Player.Player1: 0, Player.Player2: 0 }
+        self.player_properties = {
+            Player.Player1: { Property.IS_HUMAN: True, Property.DEPTH: 1, Property.STARTS_GAME: True },
+            Player.Player2: { Property.IS_HUMAN: False, Property.DEPTH: 1, Property.STARTS_GAME: False }
+        }
+
+    def get_player_property(self, player: Player, property: Property):
+        return self.player_properties[player][property]
+    
+    def set_player_property(self, player: Player, property: Property, value):
+        if property == Property.STARTS_GAME:
+            print(self.player_properties)
+            self.player_properties[player][property] = value
+            self.player_properties[Player( (player.value+1)%2 )][property] = not value
+            print(self.player_properties)
+        else:
+            self.player_properties[player][property] = value
+        print(self.player_properties)
+
+    def set_points(self, player: Player, points: int):
+        self.points[player] = points;
+
+    def get_points(self, player: Player) -> int:
+        return self.points[player]
 
     """ Returns whose turn is now """
-    def get_turn(self) -> TurnOf:
+    def get_turn(self) -> Player:
         return self.turn
     
     """ Sets whose turn is now """
-    def set_turn(self, turnOf: TurnOf):
-        self.turn = turnOf
+    def set_turn(self, player: Player):
+        self.turn = player
 
     """ Return current game state """
     def get_state(self) -> State:
         return self.state
 
-    """ Set game state to BEFORE_START """
     def in_menu(self):
         self.state = State.BEFORE_START
 
-    """ Set game state to RESTARTING """
     def restart(self):
         self.state = State.RESTARTING
 
-    """ Set game state to FINISHED """
     def finished(self):
         self.state = State.FINISHED
 
-    """ Set game state to START """
     def start(self):
         self.state = State.START
 
