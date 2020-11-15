@@ -3,6 +3,8 @@ import pygame
 from typing import List
 import pygame.freetype
 from pygame_gui.elements.ui_drop_down_menu import UIDropDownMenu
+from pygame_gui.elements.ui_text_entry_line import UITextEntryLine
+import time
 
 
 class Color(enum.Enum):
@@ -92,7 +94,7 @@ class Board():
     def __init__(self, screen, board_x = 0, board_y = 0):
         self.tiles = [
             [
-                Board.Tile(screen, board_x + (2 * c + 1) * self.tile_size, board_y + (2 * r + 1) * self.tile_size)
+                Board.Tile(screen, board_x + (2*c + 1)*self.tile_size, board_y + (2*r + 1)*self.tile_size)
                 for c in range(self.cols)
             ]
             for r in range(self.rows)
@@ -122,9 +124,10 @@ class Board():
         return -1, -1
 
 
-""" Helper class aggregating dropdown list with caption """
+""" Dropdown list with caption """
 class DropDownWithCaption:
-    def __init__(self, screen, ui_manager, x: int, y: int, options_list: List[str], starting_option: str, caption: str):
+    def __init__(self, screen, ui_manager, x: int, y: int,
+                 options_list: List[str], starting_option: str, caption: str):
         font = pygame.freetype.SysFont('Comic Sans MS', 24)
         self.x = x
         self.y = y
@@ -132,13 +135,73 @@ class DropDownWithCaption:
         self.text_surface, rect = font.render(caption, (0, 0, 0))
         self.dropdown = UIDropDownMenu(options_list=options_list,
                                        starting_option=starting_option,
-                                       relative_rect=pygame.Rect((x, y + 24), (140, 40)),
+                                       relative_rect=pygame.Rect((x, y+24), (140, 40)),
                                        manager=ui_manager)
 
     def draw(self):
         self.screen.blit(self.text_surface, (self.x, self.y))
 
-""" Timer helper class """
+""" Text input box with caption """
+class TextBoxWithCaption:
+    def __init__(self, screen, ui_manager, x: int, y: int, caption: str):
+        font = pygame.freetype.SysFont('Comic Sans MS', 24)
+        self.x = x
+        self.y = y
+        self.screen = screen
+        self.text_surface, rect = font.render(caption, (0, 0, 0))
+        self.text_box = UITextEntryLine(relative_rect=pygame.Rect((x, y+24), (30, 30)),
+                                manager=ui_manager)
+
+    """ Returns the text that is currently in the box """
+    def get_text(self) -> str:
+        return self.text_box.get_text()
+
+    def draw(self):
+        self.screen.blit(self.text_surface, (self.x + 7, self.y))
+
+
+""" Timer that displays minutes and seconds in mm:ss format """
 class Timer:
-    def __init__(self, screen):
-        pass
+    def __init__(self, screen, ui_manager, x: int, y: int):
+        self.font = pygame.freetype.SysFont('Comic Sans MS', 24)
+        self.x = x
+        self.y = y
+        self.screen = screen
+        self.seconds = 0
+        self.minutes = 0
+        self.started = False
+
+    def tick(self):
+        if self.started:
+            self.seconds += 1
+            if self.seconds == 60:
+                self.minutes += 1
+                self.seconds = 0
+
+    def reset(self):
+        self.minutes = self.seconds = 0
+        self.started = False
+
+    def start(self):
+        self.started = True
+
+    def draw(self):
+        t = (2009, 2, 17, 17, self.minutes, self.seconds, 1, 48, 36)
+        t = time.mktime(t)
+        text = time.strftime("%M:%S", time.gmtime(t))
+        self.text_surface, rect = self.font.render(text, (0, 0, 0))
+        self.screen.blit(self.text_surface, (self.x, self.y))
+
+""" Utility functions """
+
+def draw_arrow(screen, x: int, y: int, size_x: int, size_y: int, color: Color = Color.BLACK):
+    """
+        pygame.draw.polygon(self.screen, (0, 0, 0),
+                            ((0, 100), (0, 200), (200, 200), (200, 300), (300, 150), (200, 0), (200, 100)))
+                            """
+    pygame.draw.polygon(screen, color.value,
+                        ((x, y + 2*size_y), (x, y + 4*size_y), (x + 4*size_x, y + 4*size_y),
+                         (x + 4*size_x, y + 6*size_y), (x + 6*size_x, y + 3*size_y),
+                         (x + 4*size_x, y), (x + 4*size_x, y + 2*size_y)))
+
+

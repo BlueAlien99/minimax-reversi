@@ -4,9 +4,6 @@ from typing import List
 
 
 class Reversi:
-
-    Board = List[List[int]]
-
     __directions = [(1, 0), (1, 1), (0, 1), (-1, 1), (-1, 0), (-1, -1), (0, -1), (1, -1)]
 
     def __init__(self) -> None:
@@ -27,6 +24,9 @@ class Reversi:
         self.board[3][4] = 1
         self.board[4][3] = 1
         self.board[4][4] = 2
+
+    def reset(self):
+        self.__init__()
 
     def print_board(self) -> None:
         for row in self.board:

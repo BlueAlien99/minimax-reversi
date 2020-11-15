@@ -10,6 +10,11 @@ class State(enum.Enum):
     BEFORE_START = 0
     START = 1
     FINISHED = 2
+    RESTARTING = 3
+
+class TurnOf(enum.Enum):
+    Player1 = 1
+    Player2 = 2
 
 """ Defines single game move """
 class Move:
@@ -27,17 +32,34 @@ class GameState:
         self.moves = []
         self.board_state = []
         self.valid_moves = []
+        self.turn = TurnOf.Player1
+
+    """ Returns whose turn is now """
+    def get_turn(self) -> TurnOf:
+        return self.turn
+    
+    """ Sets whose turn is now """
+    def set_turn(self, turnOf: TurnOf):
+        self.turn = turnOf
+
+    """ Return current game state """
+    def get_state(self) -> State:
+        return self.state
 
     """ Set game state to BEFORE_START """
     def in_menu(self):
         self.state = State.BEFORE_START
+
+    """ Set game state to RESTARTING """
+    def restart(self):
+        self.state = State.RESTARTING
 
     """ Set game state to FINISHED """
     def finished(self):
         self.state = State.FINISHED
 
     """ Set game state to START """
-    def started(self):
+    def start(self):
         self.state = State.START
 
     """ Add a new move.
