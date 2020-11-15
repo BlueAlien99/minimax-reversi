@@ -35,7 +35,7 @@ class GameState:
         self.moves = []
         self.board_state = []
         self.valid_moves = []
-        self.turn = Player.Player1
+        self.current_player = Player.Player1
         self.points = { Player.Player1: 0, Player.Player2: 0 }
         self.player_properties = {
             Player.Player1: { Property.IS_HUMAN: True, Property.DEPTH: 1, Property.STARTS_GAME: True },
@@ -47,13 +47,10 @@ class GameState:
     
     def set_player_property(self, player: Player, property: Property, value):
         if property == Property.STARTS_GAME:
-            print(self.player_properties)
             self.player_properties[player][property] = value
             self.player_properties[Player( (player.value+1)%2 )][property] = not value
-            print(self.player_properties)
         else:
             self.player_properties[player][property] = value
-        print(self.player_properties)
 
     def set_points(self, player: Player, points: int):
         self.points[player] = points;
@@ -61,13 +58,11 @@ class GameState:
     def get_points(self, player: Player) -> int:
         return self.points[player]
 
-    """ Returns whose turn is now """
-    def get_turn(self) -> Player:
-        return self.turn
+    def get_current_player(self) -> Player:
+        return self.current_player
     
-    """ Sets whose turn is now """
-    def set_turn(self, player: Player):
-        self.turn = player
+    def set_current_player(self, player: Player):
+        self.current_player = player
 
     """ Return current game state """
     def get_state(self) -> State:

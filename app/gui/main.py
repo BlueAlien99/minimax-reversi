@@ -37,7 +37,7 @@ class GUI:
         self.player2_textbox.draw()
         self.game_timer.draw()
         # draw an arrow pointing to player's name if it is their turn
-        if self.game_state.get_turn() == Player.Player1:
+        if self.game_state.get_current_player() == Player.Player1:
             draw_arrow(self.screen, 340, 720, -10, 5)
         else:
             draw_arrow(self.screen, 460, 720, 10, 5)
@@ -73,31 +73,43 @@ class GUI:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 sys.exit()
-
-            if event.type == pygame.USEREVENT:
+            elif event.type == pygame.USEREVENT:
                 if event.user_type == pygame_gui.UI_BUTTON_PRESSED:
-                    if event.ui_element == self.play_button:
+                    if event.ui_element == self.play_button: # clicked play button
                         self.__update_game_properties()
                         self.game_state.restart()
                         self.game_timer.reset()
                         self.game_timer.start()
-
-            if event.type == pygame.MOUSEBUTTONDOWN:
+                elif event.user_type == pygame_gui.UI_DROP_DOWN_MENU_CHANGED: # changed dropdown selection
+                    if event.ui_element == self.player1_dropdown.dropdown:
+                        print(event.text)
+                        self.player1_dropdown.update_current_option(event.text)
+                    else:
+                        self.player2_dropdown.update_current_option(event.text)
+            elif event.type == pygame.MOUSEBUTTONDOWN:  # clicked board tile
                 self.game_state.add_move(self.board.is_clicked(*pygame.mouse.get_pos()))
-
-            # timer event
-            if event.type == pygame.USEREVENT+1:
+            elif event.type == pygame.USEREVENT+1:  # timer event
                 self.game_timer.tick()
-
             self.ui_manager.process_events(event)
 
+    """ Updates game properties based on current information provided by the user """
     def __update_game_properties(self):
-        player1_depth = 0
-        player2_depth = 0
+        player1_depth = 1
+        player2_depth = 1
         try:
-            player1_depth = int(self.player1_textbox.get_text())
-            player2_depth = int(self.player2_textbox.get_text())
-        except:
-            pass
+            player1_depth = self.player1_textbox.get_int()
+            player2_depth = self.player2_textbox.get_int()
+        except Exception as e:
+            print("Exception: " + str(e))
         self.game_state.set_player_property(Player.Player1, Property.DEPTH, player1_depth)
         self.game_state.set_player_property(Player.Player2, Property.DEPTH, player2_depth)
+        self.game_state.set_player_property(Player.Player1, Property.IS_HUMAN,
+                                            self.__is_human(self.player1_dropdown.get_current_option()))
+        self.game_state.set_player_property(Player.Player2, Property.IS_HUMAN,
+                                            self.__is_human(self.player2_dropdown.get_current_option()))
+
+    def __is_human(self, player_type: str):
+        if player_type == "człowiek":
+            return True
+        return False
+

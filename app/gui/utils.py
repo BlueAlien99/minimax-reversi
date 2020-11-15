@@ -148,6 +148,7 @@ class DropDownWithCaption:
         self.y = y
         self.screen = screen
         self.caption = Text(screen, x, y, caption_text)
+        self.current_option = starting_option
         self.dropdown = UIDropDownMenu(options_list=options_list,
                                        starting_option=starting_option,
                                        relative_rect=pygame.Rect((x, y+24), (140, 40)),
@@ -156,24 +157,50 @@ class DropDownWithCaption:
     def set_caption(self, caption_text: str):
         self.caption.set_text(caption_text)
 
+    def update_current_option(self, option: str):
+        self.current_option = option
+
+    def get_current_option(self) -> str:
+        return self.current_option
+
     def draw(self):
         self.caption.draw()
 
 """ Text input box with caption """
 class TextBoxWithCaption:
-    def __init__(self, screen, ui_manager, x: int, y: int, caption_text: str):
+    def __init__(self, screen, ui_manager, x: int, y: int, caption_text: str, initial_value: str = "1"):
         self.x = x
         self.y = y
         self.screen = screen
         self.caption = Text(screen, x+7, y, caption_text)
         self.text_box = UITextEntryLine(relative_rect=pygame.Rect((x, y+24), (30, 30)),
                                 manager=ui_manager)
+        self.text_box.set_text(initial_value)
 
-    """ Returns the text that is currently in the box """
-    def get_text(self) -> str:
-        return self.text_box.get_text()
+    """ Returns the text that is currently in the box. Returns 1 if it is empty """
+    def get_int(self) -> int:
+        text = self.text_box.get_text()
+        if text == "":
+            return 1
+        else:
+            return int(self.text_box.get_text())
+
+    def __validate_input(self):
+        try:
+            text = self.text_box.get_text()
+            val = int(text)
+            if val > 99:
+                self.text_box.set_text("99")
+            elif val <= 0:
+                self.text_box.set_text("1")
+        except:
+            if text == "":
+                self.text_box.set_text(text)
+            else:
+                self.text_box.set_text("1")
 
     def draw(self):
+        self.__validate_input()
         self.caption.draw()
 
 """ Timer that displays minutes and seconds in mm:ss format """
@@ -212,10 +239,6 @@ class Timer:
 """ Utility functions """
 
 def draw_arrow(screen, x: int, y: int, size_x: int, size_y: int, color: Color = Color.BLACK):
-    """
-        pygame.draw.polygon(self.screen, (0, 0, 0),
-                            ((0, 100), (0, 200), (200, 200), (200, 300), (300, 150), (200, 0), (200, 100)))
-                            """
     pygame.draw.polygon(screen, color.value,
                         ((x, y + 2*size_y), (x, y + 4*size_y), (x + 4*size_x, y + 4*size_y),
                          (x + 4*size_x, y + 6*size_y), (x + 6*size_x, y + 3*size_y),
