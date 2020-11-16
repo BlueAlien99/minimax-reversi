@@ -1,8 +1,7 @@
 from app.gui.main import GUI
 from app.reversi import Reversi
 from app.game_state import GameState, Player, State, Property
-from app import ai
-import sys
+from app import ai2
 from time import sleep
 
 
@@ -18,8 +17,12 @@ class App:
             if self.game_state.get_state() == State.RESTARTING:
                 self.reversi.reset()
                 self.game_state.start()
-            self.__make_move()
-            self.__update_game_state()
+                self.__update_game_state()
+            if not self.reversi.is_finished:
+                self.__make_move()
+                self.__update_game_state()
+                if self.reversi.is_finished:
+                    self.game_state.finished()
             self.gui.draw()
 
     def __make_move(self):
@@ -33,8 +36,8 @@ class App:
         else:
             sleep(1)
             depth = self.game_state.get_player_property(current_player, Property.DEPTH)
-            move = ai.get_optimal_move(self.reversi, depth)
-            self.reversi.make_a_move(move[0], move[1])
+            move = ai2.get_optimal_move(self.reversi, depth)
+            assert self.reversi.make_a_move(move[0], move[1])
 
     def __update_game_state(self):
         self.game_state.set_current_player(Player(self.reversi.current_player))

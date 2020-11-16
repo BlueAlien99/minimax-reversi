@@ -5,14 +5,14 @@ from .utils import Color, Board, DropDownWithCaption, Timer, TextBoxWithCaption
 from .utils import draw_arrow
 from pygame_gui.elements import UIButton
 from typing import List
-from app.game_state import GameState, Player, Property
+from app.game_state import GameState, State, Player, Property
 
 """ Class handling app's GUI behaviour """
 class GUI:
     def __init__(self, game_state: GameState):
         self.game_state = game_state
         pygame.init()
-        self.size  = 800, 800
+        self.size = 800, 820
         self.screen = pygame.display.set_mode(self.size)
         self.ui_manager = pygame_gui.UIManager(self.size) # handles some of the GUI elements (buttons, dropdowns, ...)
         self.clock = pygame.time.Clock() # this is needed for UIManager
@@ -80,15 +80,14 @@ class GUI:
                         self.game_state.restart()
                         self.game_timer.reset()
                         self.game_timer.start()
-                elif event.user_type == pygame_gui.UI_DROP_DOWN_MENU_CHANGED: # changed dropdown selection
+                elif event.user_type == pygame_gui.UI_DROP_DOWN_MENU_CHANGED:  # changed dropdown selection
                     if event.ui_element == self.player1_dropdown.dropdown:
-                        print(event.text)
                         self.player1_dropdown.update_current_option(event.text)
                     else:
                         self.player2_dropdown.update_current_option(event.text)
             elif event.type == pygame.MOUSEBUTTONDOWN:  # clicked board tile
                 self.game_state.add_move(self.board.is_clicked(*pygame.mouse.get_pos()))
-            elif event.type == pygame.USEREVENT+1:  # timer event
+            elif event.type == pygame.USEREVENT+1 and self.game_state.get_state() != State.FINISHED:  # timer event
                 self.game_timer.tick()
             self.ui_manager.process_events(event)
 

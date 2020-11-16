@@ -14,9 +14,8 @@ from app import ai
 import sys
 import os
 
-
 if __name__ == "__main__":
-    if (len(sys.argv) != 3):
+    if len(sys.argv) != 3:
         print("Usage: python3 program_name [player_1_depth] [player2_depth]")
         sys.exit()
 
@@ -46,7 +45,7 @@ if __name__ == "__main__":
         if game.current_player == 1:
             # move = ai.get_optimal_move(game, player)
             moveprune = ai.get_optimal_move(game, p1_depth)
-           # moveprune = game.valid_moves_list[randrange(len(game.valid_moves_list))]
+            # moveprune = game.valid_moves_list[randrange(len(game.valid_moves_list))]
         else:
             # t = time.process_time()
             # move = ai.get_optimal_move(game, comp)
@@ -69,7 +68,6 @@ if __name__ == "__main__":
 
     print(game.player1_points)
     print(game.player2_points)
-
 
     # Display plot showing points over time
     plt.ylabel('points')
