@@ -1,7 +1,5 @@
 import copy
 
-from typing import List
-
 
 class Reversi:
     __directions = [(1, 0), (1, 1), (0, 1), (-1, 1), (-1, 0), (-1, -1), (0, -1), (1, -1)]

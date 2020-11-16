@@ -15,19 +15,22 @@ class Color(enum.Enum):
     ORANGE = "#ffc107"
     BROWN = "#795548"
 
-""" Different states of the board tile
-        UNCHECKED -- tile is unchecked (GREEN)
-        BLACK -- checked black
-        WHITE -- checked white """
+
 class State(enum.Enum):
+    """ Different states of the board tile
+            UNCHECKED -- tile is unchecked (GREEN)
+            BLACK -- checked black
+            WHITE -- checked white """
     UNCHECKED = 0
     BLACK = 1
     WHITE = 2
 
-""" Represents tiled game board """
-class Board():
-    """ Represenst single board tile """
+
+class Board:
+    """ Represents tiled game board """
+
     class Tile:
+        """ Represents single board tile """
         """
         big_rect is always black it is used to display border around tiles
         if tile is in POSSIBLE_CHECK state:
@@ -60,8 +63,8 @@ class Board():
                 2 * Board.tile_size - 2 * Board.tile_b_size2
             )
 
-        """ Draws a tile """
         def draw(self, state: State, is_possible_check: bool):
+            """ Draws a tile """
             pygame.draw.rect(self.screen, Color.BLACK.value, self.big_rect)
 
             if is_possible_check:
@@ -70,15 +73,15 @@ class Board():
             else:
                 pygame.draw.rect(self.screen, Color.GREEN.value, self.normal_rect)
 
-            if (state == State.BLACK):
+            if state == State.BLACK:
                 pygame.draw.circle(self.screen, Color.BLACK.value, (self.x, self.y),
                                    Board.tile_size - Board.tile_padding)
-            elif (state == State.WHITE):
+            elif state == State.WHITE:
                 pygame.draw.circle(self.screen, Color.WHITE.value, (self.x, self.y),
                                    Board.tile_size - Board.tile_padding)
 
-        """ Returns True if tile was clicked """
         def is_clicked(self, x, y):
+            """ Returns True if tile was clicked """
             return self.big_rect.collidepoint((x, y))
 
     tile_size = 40
@@ -90,8 +93,8 @@ class Board():
     rows = 8
     cols = 8
 
-    """ Creates tiled board of size 8x8 """
-    def __init__(self, screen, board_x = 0, board_y = 0):
+    def __init__(self, screen, board_x=0, board_y=0):
+        """ Creates tiled board of size 8x8 """
         self.tiles = [
             [
                 Board.Tile(screen, board_x + (2*c + 1)*self.tile_size, board_y + (2*r + 1)*self.tile_size)
@@ -109,10 +112,10 @@ class Board():
                 x += 1
             y += 1
 
-    """ Checks if any tile was clicked
-            If a tile was clicked returns its coordinates
-            Returns (-1, -1) otherwise """
     def is_clicked(self, mouse_x, mouse_y) -> (int, int):
+        """ Checks if any tile was clicked
+                If a tile was clicked returns its coordinates
+                Returns (-1, -1) otherwise """
         y = 0
         for row in self.tiles:
             x = 0
@@ -123,8 +126,10 @@ class Board():
             y += 1
         return -1, -1
 
-""" Simple text field """
+
 class Text:
+    """ Simple text field """
+
     def __init__(self, screen, x: int, y: int, text: str, color: Color = Color.BLACK):
         self.font = pygame.freetype.SysFont('Comic Sans MS', 24)
         self.x = x
@@ -140,8 +145,10 @@ class Text:
         text_surface, rect = self.font.render(self.text, self.color.value)
         self.screen.blit(text_surface, (self.x, self.y))
 
-""" Dropdown list with caption """
+
 class DropDownWithCaption:
+    """ Dropdown list with caption """
+
     def __init__(self, screen, ui_manager, x: int, y: int,
                  options_list: List[str], starting_option: str, caption_text: str):
         self.x = x
@@ -166,19 +173,21 @@ class DropDownWithCaption:
     def draw(self):
         self.caption.draw()
 
-""" Text input box with caption """
+
 class TextBoxWithCaption:
+    """ Text input box with caption """
+
     def __init__(self, screen, ui_manager, x: int, y: int, caption_text: str, initial_value: str = "1"):
         self.x = x
         self.y = y
         self.screen = screen
         self.caption = Text(screen, x+7, y, caption_text)
         self.text_box = UITextEntryLine(relative_rect=pygame.Rect((x, y+24), (30, 30)),
-                                manager=ui_manager)
+                                        manager=ui_manager)
         self.text_box.set_text(initial_value)
 
-    """ Returns the text that is currently in the box. Returns 1 if it is empty """
     def get_int(self) -> int:
+        """ Returns the text that is currently in the box. Returns 1 if it is empty """
         text = self.text_box.get_text()
         if text == "":
             return 1
@@ -186,6 +195,7 @@ class TextBoxWithCaption:
             return int(self.text_box.get_text())
 
     def __validate_input(self):
+        text = ""
         try:
             text = self.text_box.get_text()
             val = int(text)
@@ -193,7 +203,7 @@ class TextBoxWithCaption:
                 self.text_box.set_text("99")
             elif val <= 0:
                 self.text_box.set_text("1")
-        except:
+        except ValueError:
             if text == "":
                 self.text_box.set_text(text)
             else:
@@ -203,9 +213,11 @@ class TextBoxWithCaption:
         self.__validate_input()
         self.caption.draw()
 
-""" Timer that displays minutes and seconds in mm:ss format """
+
 class Timer:
-    def __init__(self, screen, ui_manager, x: int, y: int):
+    """ Timer that displays minutes and seconds in mm:ss format """
+
+    def __init__(self, screen, x: int, y: int):
         self.font = pygame.freetype.SysFont('Comic Sans MS', 24)
         self.x = x
         self.y = y
@@ -232,16 +244,15 @@ class Timer:
         t = (2009, 2, 17, 17, self.minutes, self.seconds, 1, 48, 36)
         t = time.mktime(t)
         text = time.strftime("%M:%S", time.gmtime(t))
-        self.text_surface, rect = self.font.render(text, (0, 0, 0))
-        self.screen.blit(self.text_surface, (self.x, self.y))
+        text_surface, rect = self.font.render(text, (0, 0, 0))
+        self.screen.blit(text_surface, (self.x, self.y))
 
 
 """ Utility functions """
+
 
 def draw_arrow(screen, x: int, y: int, size_x: int, size_y: int, color: Color = Color.BLACK):
     pygame.draw.polygon(screen, color.value,
                         ((x, y + 2*size_y), (x, y + 4*size_y), (x + 4*size_x, y + 4*size_y),
                          (x + 4*size_x, y + 6*size_y), (x + 6*size_x, y + 3*size_y),
                          (x + 4*size_x, y), (x + 4*size_x, y + 2*size_y)))
-
-

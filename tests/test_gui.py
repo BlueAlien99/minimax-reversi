@@ -1,5 +1,4 @@
 from app.gui.main import GUI
-from app.reversi import Reversi
 from app.game_state import GameState
 
 
@@ -29,3 +28,4 @@ if __name__ == "__main__":
         game_state.set_board_state(board)
         game_state.set_valid_moves(valid_moves)
         gui.update()
+        gui.draw()
