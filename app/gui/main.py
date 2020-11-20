@@ -101,12 +101,7 @@ class GUI:
             print("Exception: " + str(e))
         self.game_state.set_player_property(Player.Player1, Property.DEPTH, player1_depth)
         self.game_state.set_player_property(Player.Player2, Property.DEPTH, player2_depth)
-        self.game_state.set_player_property(Player.Player1, Property.IS_HUMAN,
-                                            self.__is_human(self.player1_dropdown.get_current_option()))
-        self.game_state.set_player_property(Player.Player2, Property.IS_HUMAN,
-                                            self.__is_human(self.player2_dropdown.get_current_option()))
-
-    def __is_human(self, player_type: str):
-        if player_type == "człowiek":
-            return True
-        return False
+        is_player1_human = self.player1_dropdown.get_current_option() == "człowiek"
+        self.game_state.set_player_property(Player.Player1, Property.IS_HUMAN, is_player1_human)
+        is_player2_human = self.player2_dropdown.get_current_option() == "człowiek"
+        self.game_state.set_player_property(Player.Player2, Property.IS_HUMAN, is_player2_human)

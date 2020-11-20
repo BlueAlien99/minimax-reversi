@@ -1,7 +1,7 @@
 from app.gui.main import GUI
 from app.reversi import Reversi
 from app.game_state import GameState, Player, State, Property
-from app import ai2
+from app.minimax import Minimax
 from time import sleep
 import threading
 
@@ -11,7 +11,7 @@ class App:
         self.game_state = GameState()
         self.gui = GUI(self.game_state)
         self.reversi = Reversi()
-        self.ai_processing = False
+        self.ai = Minimax()
         self.ai_thread = None
 
     def run(self):
@@ -19,13 +19,14 @@ class App:
             self.gui.update()
             if self.game_state.get_state() == State.RESTARTING:
                 self.__restart()
-            if not self.reversi.is_finished and not self.ai_processing:
+            if not self.reversi.is_finished and not self.ai.is_processing:
                 self.__make_move()
             self.gui.draw()
 
     def __restart(self):
         self.gui.game_timer.reset()
-        if self.ai_processing:
+        if self.ai.is_processing:
+            self.ai.terminate()
             self.ai_thread.join()
         self.reversi.reset()
         self.__update_game_state()
@@ -39,17 +40,17 @@ class App:
         if is_human:
             self.__make_move_human()
         else:
+            self.ai.is_processing = True
             self.ai_thread = threading.Thread(target=self.__make_move_ai, args=(current_player,))
             self.ai_thread.start()
 
     def __make_move_ai(self, current_player: Player):
-        self.ai_processing = True
         depth = self.game_state.get_player_property(current_player, Property.DEPTH)
-        move = ai2.get_optimal_move(self.reversi, depth)
+        move = self.ai.get_optimal_move(self.reversi, depth)
         sleep(1)
         assert self.reversi.make_a_move(move[0], move[1])
         self.__update_game_state()
-        self.ai_processing = False
+        self.ai.is_processing = False
 
     def __make_move_human(self):
         for move in self.game_state.get_moves():

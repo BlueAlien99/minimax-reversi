@@ -8,8 +8,8 @@ import matplotlib.pyplot as plt
 from random import randrange
 
 from app.reversi import Reversi
-from app import ai2
-from app import ai
+from app import minimax
+from app import minimax_nopruning
 
 import sys
 import os
@@ -44,14 +44,14 @@ if __name__ == "__main__":
         ttt = time.process_time()
         if game.current_player == 1:
             # move = ai.get_optimal_move(game, player)
-            moveprune = ai.get_optimal_move(game, p1_depth)
+            moveprune = minimax_nopruning.get_optimal_move(game, p1_depth)
             # moveprune = game.valid_moves_list[randrange(len(game.valid_moves_list))]
         else:
             # t = time.process_time()
             # move = ai.get_optimal_move(game, comp)
             # noprunetimes.append(time.process_time() - t)
             t = time.process_time()
-            moveprune = ai.get_optimal_move(game, p2_depth)
+            moveprune = minimax_nopruning.get_optimal_move(game, p2_depth)
             prunetimes.append(time.process_time() - t)
         if moveprune == (-1, -1):
             print("invalid move")
