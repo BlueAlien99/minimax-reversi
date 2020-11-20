@@ -79,8 +79,6 @@ class GUI:
                     if event.ui_element == self.play_button:  # clicked play button
                         self.__update_game_properties()
                         self.game_state.restart()
-                        self.game_timer.reset()
-                        self.game_timer.start()
                 elif event.user_type == pygame_gui.UI_DROP_DOWN_MENU_CHANGED:  # changed dropdown selection
                     if event.ui_element == self.player1_dropdown.dropdown:
                         self.player1_dropdown.update_current_option(event.text)

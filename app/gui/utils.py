@@ -199,8 +199,8 @@ class TextBoxWithCaption:
         try:
             text = self.text_box.get_text()
             val = int(text)
-            if val > 99:
-                self.text_box.set_text("99")
+            if val > 10:
+                self.text_box.set_text("10")
             elif val <= 0:
                 self.text_box.set_text("1")
         except ValueError:
