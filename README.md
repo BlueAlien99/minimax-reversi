@@ -1,16 +1,22 @@
 # Reversi
-## File structure
-* main.py - main file
-* ai.py - AI algorithm
-* engine.py - game engine (move validation, game state,...)
-* gui.py - graphical interface
-### How to install required packages
-optionally create and activate virtual environment
-```bash
-python3 -m venv pyenv
-source pyenv/bin/activate
+
+### Instalacja zależności:
 ```
-install packages
-```bash
 pip install -r requirements.txt
+```
+
+### Uruchomienie gry:
+```
+python ./main.py
+```
+Aby rozpocząć grę, należy kliknąć przycisk "START" (który służy także do restartowania gry).
+
+### Uruchomienie testów:
+```
+python ./main_test.py
+```
+
+### Generacja wykresów:
+```
+python ./plot_gen.py [player1_depth] [player2_depth] [(y) to compare (no) pruning times for p1] [(y) to show output]
 ```
